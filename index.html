@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Husay Riddle</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0d1321, #1d2d44);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 450px;
+      background: rgba(20, 20, 35, 0.95);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+      text-align: center;
+      color: gold;
+      margin-bottom: 10px;
+      font-size: 36px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #8ecae6;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 10px;
+      background: #2b2d42;
+      color: white;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      margin-top: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.03);
+    }
+
+    .green { background: #2a9d8f; color: white; }
+    .blue { background: #3a86ff; color: white; }
+    .red { background: #e63946; color: white; }
+    .gray { background: #555; color: white; }
+    .orange { background: #f4a261; color: white; }
+
+    .menu-buttons button {
+      margin-bottom: 15px;
+    }
+
+    .stats {
+      background: rgba(255,255,255,0.08);
+      padding: 15px;
+      border-radius: 12px;
+      margin-top: 15px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      font-size: 14px;
+      color: #8ecae6;
+    }
+
+    .riddle-box {
+      background: rgba(255,255,255,0.08);
+      padding: 20px;
+      border-radius: 15px;
+      margin: 15px 0;
+      min-height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      line-height: 1.6;
+      font-size: 18px;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
+      min-height: 25px;
+    }
+
+    .scoreboard {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      background: rgba(255,255,255,0.08);
+      padding: 12px;
+      border-radius: 10px;
+    }
+
+    .leaderboard-item {
+      background: rgba(255,255,255,0.05);
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      color: gray;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- LOGIN -->
+    <div id="loginScreen">
+      <h1>HUSAY RIDDLE</h1>
+      <h2>Welcome Back</h2>
+
+      <input type="text" id="loginUsername" placeholder="Username">
+      <input type="password" id="loginPassword" placeholder="Password">
+
+      <button class="green" onclick="login()">LOGIN</button>
+      <button class="blue" onclick="showRegister()">REGISTER</button>
+      <button class="gray" onclick="guestLogin()">PLAY AS GUEST</button>
+
+      <div class="message" id="loginMessage"></div>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="registerScreen" class="hidden">
+      <h1>CREATE ACCOUNT</h1>
+      <h2>Join the Riddle Community</h2>
+
+      <input type="text" id="regUsername" placeholder="Username">
+      <input type="password" id="regPassword" placeholder="Password">
+      <input type="password" id="regConfirm" placeholder="Confirm Password">
+
+      <button class="green" onclick="register()">REGISTER</button>
+      <button class="gray" onclick="showLogin()">BACK</button>
+
+      <div class="message" id="registerMessage"></div>
+    </div>
+
+    <!-- MENU -->
+    <div id="menuScreen" class="hidden">
+      <h1>HUSAY RIDDLE</h1>
+      <h2 id="welcomeText"></h2>
+
+      <div class="menu-buttons">
+        <button class="green" onclick="showCategory()">START GAME</button>
+        <button class="blue" onclick="showHowToPlay()">HOW TO PLAY</button>
+        <button class="orange" onclick="showLeaderboard()">LEADERBOARD</button>
+        <button class="gray" onclick="logout()">LOGOUT</button>
+      </div>
+
+      <div class="stats" id="quickStats"></div>
+    </div>
+
+    <!-- CATEGORY -->
+    <div id="categoryScreen" class="hidden">
+      <h1>SELECT CATEGORY</h1>
+
+      <button class="blue" onclick="selectCategory('English')">
+        ENGLISH RIDDLES
+      </button>
+
+      <button class="green" onclick="selectCategory('Tagalog')">
+        TAGALOG RIDDLES
+      </button>
+
+      <button class="gray" onclick="showMenu()">BACK</button>
+    </div>
+
+    <!-- DIFFICULTY -->
+    <div id="difficultyScreen" class="hidden">
+      <h1>SELECT DIFFICULTY</h1>
+
+      <button class="green" onclick="startGame('Easy')">EASY</button>
+      <button class="orange" onclick="startGame('Medium')">MEDIUM</button>
+      <button class="red" onclick="startGame('Hard')">HARD</button>
+
+      <button class="gray" onclick="showCategory()">BACK</button>
+    </div>
+
+    <!-- GAME -->
+    <div id="gameScreen" class="hidden">
+      <div class="topbar">
+        <span id="playerName"></span>
+        <span id="timer">30s</span>
+      </div>
+
+      <div class="scoreboard">
+        <div>Score: <span id="score">0</span></div>
+        <div>Level: <span id="level">1</span></div>
+      </div>
+
+      <div class="riddle-box" id="riddleQuestion"></div>
+
+      <input type="text" id="answerInput" placeholder="Type your answer...">
+
+      <button class="green" onclick="submitAnswer()">SUBMIT</button>
+      <button class="orange" onclick="showHint()">HINT</button>
+      <button class="gray" onclick="showMenu()">MENU</button>
+
+      <div class="message" id="gameMessage"></div>
+    </div>
+
+    <!-- HOW TO PLAY -->
+    <div id="howToPlayScreen" class="hidden">
+      <h1>HOW TO PLAY</h1>
+
+      <div class="stats">
+        1. Login or Register<br><br>
+        2. Choose Category and Difficulty<br><br>
+        3. Solve riddles before time runs out<br><br>
+        4. Correct answer gives points<br><br>
+        5. Hint costs points<br><br>
+        6. Reach the highest score!
+      </div>
+
+      <button class="gray" onclick="showMenu()">BACK</button>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div id="leaderboardScreen" class="hidden">
+      <h1>LEADERBOARD</h1>
+
+      <div id="leaderboardList"></div>
+
+      <button class="gray" onclick="showMenu()">BACK</button>
+    </div>
+
+    <div class="footer">
+      Riddle Master - Test Your Intelligence
+    </div>
+  </div>
+
+  <script>
+    let currentUser = "Guest";
+    let selectedCategory = "English";
+    let selectedDifficulty = "Easy";
+    let currentLevel = 0;
+    let score = 0;
+    let timer = 30;
+    let timerInterval;
+
+    const riddles = {
+      English: {
+        Easy: [
+          {
+            question: "What has to be broken before you can use it?",
+            answer: "egg",
+            hint: "Breakfast item"
+          },
+          {
+            question: "What has keys but can't open locks?",
+            answer: "piano",
+            hint: "Musical instrument"
+          },
+          {
+            question: "What gets wetter as it dries?",
+            answer: "towel",
+            hint: "Used after shower"
+          }
+        ],
+        Medium: [
+          {
+            question: "What has words but never speaks?",
+            answer: "book",
+            hint: "Has pages"
+          },
+          {
+            question: "What can fill a room but takes up no space?",
+            answer: "light",
+            hint: "Opposite of dark"
+          }
+        ],
+        Hard: [
+          {
+            question: "What is always in front of you but can't be seen?",
+            answer: "future",
+            hint: "Yet to come"
+          },
+          {
+            question: "The more of me there is, the less you see. What am I?",
+            answer: "darkness",
+            hint: "Opposite of light"
+          }
+        ]
+      },
+
+      Tagalog: {
+        Easy: [
+          {
+            question: "Dalawang balon, hindi malingon.",
+            answer: "mata",
+            hint: "Pandama"
+          },
+          {
+            question: "Bahay ni kapitan, hindi mabuksan.",
+            answer: "itlog",
+            hint: "Pagkain"
+          }
+        ],
+
+        Medium: [
+          {
+            question: "Isang butil ng palay, sakop ang buong bahay.",
+            answer: "ilaw",
+            hint: "Nagbibigay liwanag"
+          }
+        ],
+
+        Hard: [
+          {
+            question: "Ako ay may kaibigan, kasama ko kahit saan.",
+            answer: "anino",
+            hint: "Sumusunod sayo"
+          }
+        ]
+      }
+    };
+
+    function saveUsers(users) {
+      localStorage.setItem("husayUsers", JSON.stringify(users));
+    }
+
+    function getUsers() {
+      return JSON.parse(localStorage.getItem("husayUsers")) || {};
+    }
+
+    function showScreen(id) {
+      document.querySelectorAll('.container > div').forEach(div => {
+        if (!div.classList.contains('footer')) {
+          div.classList.add('hidden');
+        }
+      });
+
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function showLogin() {
+      showScreen('loginScreen');
+    }
+
+    function showRegister() {
+      showScreen('registerScreen');
+    }
+
+    function showMenu() {
+      updateQuickStats();
+      document.getElementById('welcomeText').innerText = `Welcome, ${currentUser}`;
+      showScreen('menuScreen');
+    }
+
+    function showCategory() {
+      showScreen('categoryScreen');
+    }
+
+    function showHowToPlay() {
+      showScreen('howToPlayScreen');
+    }
+
+    function showLeaderboard() {
+      const users = getUsers();
+      const list = document.getElementById('leaderboardList');
+      list.innerHTML = '';
+
+      const sorted = Object.entries(users)
+        .sort((a,b) => (b[1].highScore || 0) - (a[1].highScore || 0));
+
+      if(sorted.length === 0) {
+        list.innerHTML = '<p>No players yet!</p>';
+      }
+
+      sorted.forEach((user, index) => {
+        const div = document.createElement('div');
+        div.className = 'leaderboard-item';
+        div.innerHTML = `
+          <span>#${index + 1} ${user[0]}</span>
+          <span>${user[1].highScore || 0}</span>
+        `;
+        list.appendChild(div);
+      });
+
+      showScreen('leaderboardScreen');
+    }
+
+    function selectCategory(category) {
+      selectedCategory = category;
+      showScreen('difficultyScreen');
+    }
+
+    function register() {
+      const username = document.getElementById('regUsername').value.trim();
+      const password = document.getElementById('regPassword').value.trim();
+      const confirm = document.getElementById('regConfirm').value.trim();
+
+      const users = getUsers();
+
+      if(username.length < 3) {
+        return showRegisterMessage('Username must be at least 3 characters', 'red');
+      }
+
+      if(password.length < 4) {
+        return showRegisterMessage('Password must be at least 4 characters', 'red');
+      }
+
+      if(password !== confirm) {
+        return showRegisterMessage('Passwords do not match', 'red');
+      }
+
+      if(users[username]) {
+        return showRegisterMessage('Username already exists', 'red');
+      }
+
+      users[username] = {
+        password,
+        highScore: 0,
+        gamesPlayed: 0
+      };
+
+      saveUsers(users);
+      showRegisterMessage('Registration successful!', 'lightgreen');
+
+      setTimeout(showLogin, 1000);
+    }
+
+    function login() {
+      const username = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+
+      const users = getUsers();
+
+      if(!users[username]) {
+        return showLoginMessage('User not found', 'red');
+      }
+
+      if(users[username].password !== password) {
+        return showLoginMessage('Incorrect password', 'red');
+      }
+
+      currentUser = username;
+      showMenu();
+    }
+
+    function guestLogin() {
+      currentUser = 'Guest';
+      showMenu();
+    }
+
+    function logout() {
+      currentUser = 'Guest';
+      showLogin();
+    }
+
+    function showLoginMessage(msg, color) {
+      const el = document.getElementById('loginMessage');
+      el.innerText = msg;
+      el.style.color = color;
+    }
+
+    function showRegisterMessage(msg, color) {
+      const el = document.getElementById('registerMessage');
+      el.innerText = msg;
+      el.style.color = color;
+    }
+
+    function startGame(difficulty) {
+      selectedDifficulty = difficulty;
+      currentLevel = 0;
+      score = 0;
+      document.getElementById('score').innerText = score;
+      nextRiddle();
+      showScreen('gameScreen');
+    }
+
+    function nextRiddle() {
+      const list = riddles[selectedCategory][selectedDifficulty];
+
+      if(currentLevel >= list.length) {
+        endGame();
+        return;
+      }
+
+      const riddle = list[currentLevel];
+
+      document.getElementById('playerName').innerText = currentUser;
+      document.getElementById('level').innerText = currentLevel + 1;
+      document.getElementById('riddleQuestion').innerText = riddle.question;
+      document.getElementById('answerInput').value = '';
+      document.getElementById('gameMessage').innerText = '';
+
+      startTimer();
+    }
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      timer = 30;
+      document.getElementById('timer').innerText = timer + 's';
+
+      timerInterval = setInterval(() => {
+        timer--;
+        document.getElementById('timer').innerText = timer + 's';
+
+        if(timer <= 0) {
+          clearInterval(timerInterval);
+          document.getElementById('gameMessage').innerText = 'Time is up!';
+          currentLevel++;
+
+          setTimeout(nextRiddle, 1500);
+        }
+      }, 1000);
+    }
+
+    function submitAnswer() {
+      const answer = document.getElementById('answerInput').value.trim().toLowerCase();
+      const riddle = riddles[selectedCategory][selectedDifficulty][currentLevel];
+
+      if(answer === riddle.answer.toLowerCase()) {
+        clearInterval(timerInterval);
+
+        let earned = 10 + Math.floor(timer / 2);
+        score += earned;
+
+        document.getElementById('score').innerText = score;
+        document.getElementById('gameMessage').innerText = `Correct! +${earned} points`;
+        document.getElementById('gameMessage').style.color = 'lightgreen';
+
+        currentLevel++;
+
+        setTimeout(nextRiddle, 1500);
+      } else {
+        document.getElementById('gameMessage').innerText = 'Wrong answer!';
+        document.getElementById('gameMessage').style.color = 'salmon';
+      }
+    }
+
+    function showHint() {
+      const riddle = riddles[selectedCategory][selectedDifficulty][currentLevel];
+
+      score = Math.max(0, score - 2);
+      document.getElementById('score').innerText = score;
+
+      document.getElementById('gameMessage').innerText = 'Hint: ' + riddle.hint;
+      document.getElementById('gameMessage').style.color = '#ffd166';
+    }
+
+    function endGame() {
+      clearInterval(timerInterval);
+
+      const users = getUsers();
+
+      if(currentUser !== 'Guest' && users[currentUser]) {
+        users[currentUser].gamesPlayed += 1;
+
+        if(score > users[currentUser].highScore) {
+          users[currentUser].highScore = score;
+        }
+
+        saveUsers(users);
+      }
+
+      alert(`Game Finished! Your score: ${score}`);
+      showMenu();
+    }
+
+    function updateQuickStats() {
+      const users = getUsers();
+      const stats = users[currentUser];
+
+      const box = document.getElementById('quickStats');
+
+      if(currentUser === 'Guest' || !stats) {
+        box.innerHTML = 'Playing as Guest';
+        return;
+      }
+
+      box.innerHTML = `
+        <b>High Score:</b> ${stats.highScore}<br>
+        <b>Games Played:</b> ${stats.gamesPlayed}
+      `;
+    }
+  </script>
+</body>
+</html>
